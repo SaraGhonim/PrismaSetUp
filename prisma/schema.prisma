@@ -8,21 +8,39 @@ generator client {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  notes   Note[]
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String?
   password String
+
+  notes  Note[]
+  tokens Token[]
+
 }
 
-
 model Note {
-  id         Int        @id @default(autoincrement())
-  createdAt  DateTime   @default(now())
-  title      String     
-  content    String 
-  published  Boolean    @default(false)
-  authorId   Int        
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  authorId  Int
 
-  author     User       @relation(fields: [authorId], references: [id])
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model Token {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  type       TokenType
+  valid      Boolean   @default(true)
+  emailToken String?   @unique
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+}
+
+enum TokenType {
+  EMAIL
+  API
 }

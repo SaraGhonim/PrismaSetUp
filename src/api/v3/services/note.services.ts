@@ -1,54 +1,37 @@
-import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
-
-
+import  * as noteModel from '../models/note.model'
 
 export const retrieveNotes = async () => {
-  const result = await prisma.note.findMany();
-  return result;
+  return noteModel.getAll()
 };
 
 
 export const retrieveNote = async (id:string) => {
+  const note   = await noteModel.getNote(id)
+  if(!note.length) throw new Error('Not found')
 
-  const result = await prisma.note.findMany({
-    where: { id: Number(id) },
-  }); return result;
+  return note
 };
 
-
-
 export const insertNote = async (title: string, content: string,authorId:string) => {
-    const result = await prisma.note.create({
-      data: {
-        title: title,
-        content: content,
-        authorId: Number(authorId),
-      },
-    });
-  
+
+    const result = await noteModel.create(title,content,authorId)
     return result;
   };
   
-
 export const editNote = async (id: string, title: string) => {
+    const note   = await noteModel.getNote(id)
+    if(!note.length) throw new Error('Not found')
 
-    const result = await prisma.note.update({
-        where: { id: Number(id) },
-        data: { title },
-      });
-  
+    const result = await noteModel.update(id,title) 
     return result;
   };
- 
 
 export const removeNote = async (id: string) => {
+    const note   = await noteModel.getNote(id)
+    if(!note.length) throw new Error('Not found')
 
-    const result = await prisma.note.delete({
-        where: { id: Number(id) },
-      });
-  
+    const result = await noteModel.deleteNote(id)
     return result;
   };
  

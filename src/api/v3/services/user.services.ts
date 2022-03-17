@@ -1,48 +1,45 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+import * as userModel from "../models/user.model";
+
 
 export const retrieveUsers = async () => {
-  const result = await prisma.user.findMany();
+  return userModel.findAll();
+};
+
+export const retrieveUser = async (email: string) => {
+  const user = await userModel.findUser(email);
+  if (!user.length) return"Not found"
+
+  return user;
+};
+
+export const insertUser = async (
+  email: string,
+  password: string,
+  name: string
+) => {
+  const user = await userModel.findUser(email);
+  if (!user.length) return "Already exist"
+
+  const result = await userModel.create(email, password, name);
+
   return result;
 };
 
 
-export const retrieveUser = async (id:string) => {
+export const edituser = async (email: string,name:string) => {
+  const user = await userModel.findUser(email);
+  if (!user.length) return "Not found";
 
-  const result = await prisma.user.findMany({
-    where: { id: Number(id) },
-  }); return result;
-};  
-  export const insertUser = async (email: string, password: string,name:string) => {
-    const response = await prisma.user.create({
-      data: {
-        email: email,
-        password: password,
-        name:name,
-      },
-    });
-  
-    return response;
-  };
- 
-  
-  export const editUser = async (id: string, name: string) => {
+  const result = await userModel.update(email,name);
+  return result;
+};
 
-    const response = await prisma.user.update({
-        where: { id: Number(id) },
-        data: { name },
-      });
-  
-    return response;
-  };
- 
+export const removeuser = async (email: string) => {
+  const user = await userModel.findUser(email);
+  if (!user.length) return"Not found"
 
-  export const removeUser = async (id: string) => {
-
-    const response = await prisma.user.delete({
-        where: { id: Number(id) },
-      });
-  
-    return response;
-  };
- 
+  const result = await userModel.deleteUser(email);
+  return result;
+};

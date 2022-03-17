@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { retrieveNotes, retrieveNote,insertNote, editNote, removeNote } from "../Services/note.services";
+import { retrieveNotes, retrieveNote,insertNote, editNote, removeNote } from "../services/note.services";
 
 
 export const getNotes: RequestHandler = async (req, res) => {
